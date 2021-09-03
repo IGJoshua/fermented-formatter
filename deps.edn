@@ -1,0 +1,14 @@
+{:paths ["src" "resources"]
+ :deps {org.clojure/clojure {:mvn/version "1.10.3"}}
+
+ :tools/usage {:ns-default fermented-formatter.cli}
+
+ :aliases
+ {:build {:deps {org.clojure/clojure {:mvn/version "1.10.3"}
+                 io.github.clojure/tools.build {:git/tag "v0.2.0" :git/sha "ef094d6"}}
+          :ns-default build}
+
+  :test {:extra-paths ["test"]
+         :extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}
+                      io.github.cognitect-labs/test-runner {:git/tag "v0.4.0" :git/sha "334f2e2"}}
+         :exec-fn cognitect.test-runner.api/test}}}
