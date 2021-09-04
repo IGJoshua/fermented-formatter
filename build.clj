@@ -34,6 +34,16 @@
 (def jar-file (str target-dir "fermented-formatter.jar"))
 (def uberjar-file (str target-dir "fermented-formatter-standalone.jar"))
 
+(def windows? (str/starts-with? (System/getProperty "os.name")
+                                "Windows"))
+
+(def graalvm-home (System/getenv "GRAALVM_HOME"))
+
+(defn- cmd
+  "Constructs a platform-specific command name from a graalvm command name."
+  [name]
+  (str name (when windows? ".cmd")))
+
 (defn- exists?
   "Checks if a file composed of the given path segments exists."
   [& path-components]
@@ -118,6 +128,30 @@
               :version version
               :jar-file jar-file
               :class-dir class-dir})
+  opts)
+
+(defn native-image
+  "Generates a `fermented-formatter` native-image binary in the `target/` directory.
+
+  To run this alias the machine must already have a GraalVM installation
+  available under the environment variable GRAALVM_HOME."
+  [opts]
+  (uberjar opts)
+  (when-not (exists? graalvm-home "bin" (cmd "native-image"))
+    (let [graal-executable (str (io/file graalvm-home "bin" (cmd "gu")))]
+      (b/process {:command-args [graal-executable "install" "native-image"]})))
+  (when-not (exists? target-dir "fermented-formatter")
+    (let [native-image (str (io/file graalvm-home "bin" (cmd "native-image")))]
+      (b/process {:command-args [native-image
+                                 "-jar" uberjar-file
+                                 (str "-H:Name=" target-dir "fermented-formatter")
+                                 "-H:+ReportExceptionStackTraces"
+                                 (str "-H:IncludeResources="
+                                      (str/join "," (map #(str % "/.*") resource-dirs)))
+                                 "--initialize-at-build-time"
+                                 "-H:Log=registerResource:"
+                                 "--verbose"
+                                 "--no-fallback" "--no-server"]})))
   opts)
 
 (defn run-tasks
