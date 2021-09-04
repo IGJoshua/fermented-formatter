@@ -15,6 +15,8 @@
                        :sign-releases? true
                        :artifact "target/fermented-formatter.jar"}}
 
+  :dev {:extra-paths ["."]
+        :extra-deps {io.github.clojure/tools.build {:git/tag "v0.2.0" :git/sha "ef094d6"}}}
   :test {:extra-paths ["test"]
          :extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}
                       io.github.cognitect-labs/test-runner {:git/tag "v0.4.0" :git/sha "334f2e2"}}
