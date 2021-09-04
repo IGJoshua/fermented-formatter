@@ -5,7 +5,7 @@
 
  :aliases
  {:build {:deps {org.clojure/clojure {:mvn/version "1.10.3"}
-                 io.github.clojure/tools.build {:git/tag "v0.2.0" :git/sha "ef094d6"}}
+                 io.github.clojure/tools.build {:git/tag "v0.2.1" :git/sha "dd64636"}}
           :ns-default build
           :exec-fn run-tasks}
 
@@ -16,7 +16,7 @@
                        :artifact "target/fermented-formatter.jar"}}
 
   :dev {:extra-paths ["."]
-        :extra-deps {io.github.clojure/tools.build {:git/tag "v0.2.0" :git/sha "ef094d6"}}}
+        :extra-deps {io.github.clojure/tools.build {:git/tag "v0.2.1" :git/sha "dd64636"}}}
   :test {:extra-paths ["test"]
          :extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}
                       io.github.cognitect-labs/test-runner {:git/tag "v0.4.0" :git/sha "334f2e2"}}
