@@ -155,8 +155,7 @@
                                  "-jar" uberjar-file
                                  (str "-H:Name=" target-dir "fermented-formatter")
                                  "-H:+ReportExceptionStackTraces"
-                                 (str "-H:IncludeResources="
-                                      (str/join "," (map #(str % ".*") resource-dirs)))
+                                 "-H:IncludeResources=fermented_formatter/.*"
                                  "--initialize-at-build-time"
                                  "-H:Log=registerResource:"
                                  "--verbose"
