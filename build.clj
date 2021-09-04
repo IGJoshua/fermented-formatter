@@ -23,8 +23,8 @@
 (def compiled-namespaces '[fermented-formatter.cli fermented-formatter.cli.main])
 (def main-class "fermented_formatter.cli.main")
 
-(def source-dirs ["src"])
-(def resource-dirs ["resources"])
+(def source-dirs ["src/"])
+(def resource-dirs ["resources/"])
 
 (def target-dir "target/")
 (def class-dir (str target-dir "classes/"))
