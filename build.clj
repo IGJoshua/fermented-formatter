@@ -84,15 +84,23 @@
                   :target path}))
   opts)
 
+(defn- copy-resources
+  "Copies the resources from the [[resource-dirs]] to the [[class-dir]]."
+  [opts]
+  (b/copy-dir {:target-dir class-dir
+               :src-dirs resource-dirs})
+  opts)
+
 (defn jar
   "Generates a `fermented-formatter.jar` file in the `target/` directory.
 
   This is a thin jar including only the sources and resources."
   [opts]
   (write-pom opts)
+  (copy-resources opts)
   (when-not (exists? target-dir jar-file)
     (b/copy-dir {:target-dir class-dir
-                 :src-dirs (concat source-dirs resource-dirs)})
+                 :src-dirs resource-dirs})
     (b/jar {:class-dir class-dir
             :jar-file jar-file}))
   opts)
@@ -104,6 +112,7 @@
   dependencies."
   [opts]
   (write-pom opts)
+  (copy-resources opts)
   (when-not (some #(str/ends-with? (.getName %) ".class")
                   (file-seq (io/file class-dir)))
     (b/compile-clj {:basis basis
