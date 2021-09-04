@@ -77,7 +77,12 @@
 
 (defn pom
   [opts]
-  (write-pom opts))
+  (write-pom opts)
+  (when-some [path (:output-path opts)]
+    (b/copy-file {:src (b/pom-path {:lib lib-coord
+                                    :class-dir class-dir})
+                  :target path}))
+  opts)
 
 (defn jar
   [opts]
