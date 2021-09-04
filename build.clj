@@ -21,7 +21,7 @@
 (def version (format "0.1.%s-SNAPSHOT" (b/git-count-revs nil)))
 
 (def compiled-namespaces '[fermented-formatter.cli fermented-formatter.cli.main])
-(def main-class 'fermented_formatter.cli.main)
+(def main-class "fermented_formatter.cli.main")
 
 (def source-dirs ["src"])
 (def resource-dirs ["resources"])
