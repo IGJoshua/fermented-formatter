@@ -6,7 +6,8 @@
  :aliases
  {:build {:deps {org.clojure/clojure {:mvn/version "1.10.3"}
                  io.github.clojure/tools.build {:git/tag "v0.2.0" :git/sha "ef094d6"}}
-          :ns-default build}
+          :ns-default build
+          :exec-fn run-tasks}
 
   :test {:extra-paths ["test"]
          :extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}
