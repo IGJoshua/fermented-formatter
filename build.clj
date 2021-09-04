@@ -156,7 +156,7 @@
                                  (str "-H:Name=" target-dir "fermented-formatter")
                                  "-H:+ReportExceptionStackTraces"
                                  (str "-H:IncludeResources="
-                                      (str/join "," (map #(str % "/.*") resource-dirs)))
+                                      (str/join "," (map #(str % ".*") resource-dirs)))
                                  "--initialize-at-build-time"
                                  "-H:Log=registerResource:"
                                  "--verbose"
