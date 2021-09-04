@@ -14,6 +14,7 @@
   deployments. Use the `:deploy` alias to deploy to clojars."
   (:require
    [clojure.java.io :as io]
+   [clojure.string :as str]
    [clojure.tools.build.api :as b]))
 
 (def lib-coord 'org.suskalo/fermented-formatter)
@@ -55,40 +56,6 @@
                   :resource-dirs resource-dirs}))
   opts)
 
-(defn- write-jar
-  "Writes a jar file if one does not already exist."
-  [opts]
-  (when-not (exists? target-dir jar-file)
-    (b/copy-dir {:target-dir class-dir
-                 :src-dirs (concat source-dirs resource-dirs)})
-    (b/jar {:class-dir class-dir
-            :jar-file jar-file}))
-  opts)
-
-(defn- compile-clojure
-  "Compiles all the clojure sources from the [[compiled-namespaces]] if no class
-  files are in the target directory."
-  [opts]
-  (when-not (some #(.endsWith (.getName %) ".class")
-                  (file-seq (io/file class-dir)))
-    (b/compile-clj {:basis basis
-                    :class-dir class-dir
-                    :src-dirs source-dirs
-                    :ns-compile compiled-namespaces
-                    :compile-opts {:elide-meta [:doc :file :line]
-                                   :direct-linking true}}))
-  opts)
-
-(defn- write-uberjar
-  "Writes an uberjar file if one does not already exist."
-  [opts]
-  (when-not (exists? uberjar-file)
-    (b/uber {:class-dir class-dir
-             :uber-file uberjar-file
-             :basis basis
-             :main main-class}))
-  opts)
-
 (defn clean
   "Deletes the `target/` directory."
   [opts]
@@ -112,9 +79,13 @@
 
   This is a thin jar including only the sources and resources."
   [opts]
-  (-> opts
-      write-pom
-      write-jar))
+  (write-pom opts)
+  (when-not (exists? target-dir jar-file)
+    (b/copy-dir {:target-dir class-dir
+                 :src-dirs (concat source-dirs resource-dirs)})
+    (b/jar {:class-dir class-dir
+            :jar-file jar-file}))
+  opts)
 
 (defn uberjar
   "Generates a `fermented-formatter-standalone.jar` file in the `target/` directory.
@@ -122,10 +93,21 @@
   This is an uberjar including both AOT-compiled Clojure, resources, and
   dependencies."
   [opts]
-  (-> opts
-      compile-clojure
-      write-pom
-      write-uberjar))
+  (write-pom opts)
+  (when-not (some #(str/ends-with? (.getName %) ".class")
+                  (file-seq (io/file class-dir)))
+    (b/compile-clj {:basis basis
+                    :class-dir class-dir
+                    :src-dirs source-dirs
+                    :ns-compile compiled-namespaces
+                    :compile-opts {:elide-meta [:doc :file :line]
+                                   :direct-linking true}}))
+  (when-not (exists? uberjar-file)
+    (b/uber {:class-dir class-dir
+             :uber-file uberjar-file
+             :basis basis
+             :main main-class}))
+  opts)
 
 (defn install-lib
   "Installs a generated thin jar (as [[jar]]) to the local maven repo."
