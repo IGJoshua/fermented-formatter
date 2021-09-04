@@ -88,8 +88,8 @@
 (defn uberjar
   [opts]
   (-> opts
-      write-pom
       compile-clojure
+      write-pom
       write-uberjar))
 
 (defn install-lib
