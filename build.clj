@@ -51,7 +51,8 @@
 
 (defn- compile-clojure
   [opts]
-  (when-not (exists? class-dir)
+  (when-not (some #(.endsWith (.getName %) ".class")
+                  (file-seq (io/file class-dir)))
     (b/compile-clj {:basis basis
                     :class-dir class-dir
                     :src-dirs source-dirs
