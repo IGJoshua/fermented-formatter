@@ -26,7 +26,8 @@
 
 (defn- write-pom
   [opts]
-  (when-not (exists? target-dir "pom.xml")
+  (when-not (exists? (b/pom-path {:lib lib-coord
+                                  :class-dir class-dir}))
     (b/write-pom {:basis basis
                   :class-dir class-dir
                   :lib lib-coord
